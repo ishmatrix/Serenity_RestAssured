@@ -184,6 +184,7 @@
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-java8:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: net.jodah:typetools:0.5.0" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:tag-expressions:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.rest-assured:rest-assured:3.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.groovy:groovy-xml:2.4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />

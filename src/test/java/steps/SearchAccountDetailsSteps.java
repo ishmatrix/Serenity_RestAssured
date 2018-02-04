@@ -1,34 +1,33 @@
 package steps;
 
-import io.restassured.RestAssured;
-import io.restassured.http.Cookie;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;
+import net.serenitybdd.rest.stubs.ResponseStub;
 import net.thucydides.core.annotations.Step;
+
 import static org.hamcrest.Matchers.equalTo;
 
-public class SearchActiveAccountsSteps {
+public class SearchAccountDetailsSteps {
 
-    //Initialize all prerequsite
+    //Initialize all pre-requisite
 
     private final String BASE_URI="http://poctest.mocklab.io";
-    private final String RESOURCE="/bankaccounts";
-    private final String cookieValue="Cookie=9999999999A";
-    private final String paramKey_filter_by="filter_by";
-    private final String paramValue_filter_by="Status.All";
+    private final String RESOURCE="/bankaccounts/";
+    private final String paramKey_account_id="account_id";
+    private final String paramValue_account_id="460000000048001";
 
 
 
     private Response res;
 
-    @Step("Given the user has an active session send a get request ")
-    public void sendGetRequestForAllActiveAccounts(){
+    @Step("Request account details by providing account id ")
+    public void sendGetRequestForAccountDetails(){
 
 
         res=  SerenityRest
                 .given()
-                .cookie(cookieValue)
-                .param(paramKey_filter_by,paramValue_filter_by)
+                .queryParam(paramKey_account_id,paramValue_account_id)
                 .when()
                 .get(BASE_URI+RESOURCE);
 
@@ -48,8 +47,8 @@ public class SearchActiveAccountsSteps {
 
     }
 
-    @Step("Record all the account id's, bank name and status")
-    public void recordActiveAccountDetails(){
+    @Step("Record all the details mapped to that account id")
+    public void recordAccountDetails(){
 
 
 

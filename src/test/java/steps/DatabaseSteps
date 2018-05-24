@@ -1,0 +1,132 @@
+// Copyright (c) 2018 Vocalink Ltd
+package com.vocalink.bps.acceptancetest.steps;
+
+
+import com.vocalink.bps.acceptancetest.common.ResourceReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * This class contains database related common steps
+ */
+public class DatabaseSteps {
+
+    private static Logger log = LoggerFactory.getLogger(DatabaseSteps.class);
+
+    // JDBC driver name and database URL
+    private static final String JDBC_DRIVER = ResourceReader.getProperty("bulkfile.datasource.driverClassName");
+    private static final String DB_URL = ResourceReader.getProperty("bulkfile.datasource.url");
+
+    // Database credentials
+    private static final String USER = ResourceReader.getProperty("bulkfile.datasource.username");
+    private static final String PASS = ResourceReader.getProperty("bulkfile.datasource.password");
+
+    private Connection con;
+    private List<Map<String, Object>> queryResult = new ArrayList<>();
+
+    /**
+     * The method created a database connection
+     *
+     * @return an instance of active database connection
+     */
+    public Connection getDatabaseConnection() {
+        try {
+            //Register JDBC driver
+            Class.forName(JDBC_DRIVER);
+
+            //Open a connection
+            con = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            //Log if the database connection is established
+            log.debug("Connection is active: ", con.isValid(1000));
+
+        } catch (ClassNotFoundException | SQLException e) {
+            log.error(e.getMessage());
+        }
+        return con;
+
+    }
+
+    /**The method returns table schema
+     * @param catalog           table catalog (may be null)
+     * @param schemaPattern     table schema (may be null)
+     * @param tableNamePattern  table name
+     * @param columnNamePattern column name
+     */
+     public List<Map<String, Object>> getTableSchema(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) {
+
+        try {
+            // Get the MetaData
+            DatabaseMetaData metaData = con.getMetaData();
+
+            //Get table schema
+            ResultSet columns = metaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+            ResultSetMetaData rsmd = columns.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+
+            while (columns.next()) {
+                Map<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(rsmd.getColumnName(i), columns.getObject(i));
+                }
+                queryResult.add(row);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return queryResult;
+    }
+
+    /**
+     * The method converts the result set to a List of HashMaps
+     *
+     * @param resultSet the result set
+     * @return a list of hashmaps
+     */
+    public List<HashMap<String, Object>> getResultSetAsListOf(ResultSet resultSet) {
+        List<HashMap<String, Object>> list = new ArrayList<>();
+        try {
+            ResultSetMetaData md = resultSet.getMetaData();
+            int columns = md.getColumnCount();
+
+            while (resultSet.next()) {
+                HashMap<String, Object> row = new HashMap<>(columns);
+                for (int i = 1; i <= columns; ++i) {
+                    row.put(md.getColumnName(i), resultSet.getObject(i));
+                }
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return list;
+    }
+
+    /**
+     * This method explicitly closes database connection
+     */
+    public void closeConnection() {
+        try {
+            //Close database connection
+            if (con.isValid(1000)) {
+                con.close();
+                log.debug("Connection closed");
+            }
+        } catch (SQLException e) {
+            log.error("Unable to close database connection", e.getMessage());
+        }
+    }
+
+
+}

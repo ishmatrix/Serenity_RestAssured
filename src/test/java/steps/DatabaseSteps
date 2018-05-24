@@ -25,12 +25,12 @@ public class DatabaseSteps {
     private static Logger log = LoggerFactory.getLogger(DatabaseSteps.class);
 
     // JDBC driver name and database URL
-    private static final String JDBC_DRIVER = ResourceReader.getProperty("bulkfile.datasource.driverClassName");
-    private static final String DB_URL = ResourceReader.getProperty("bulkfile.datasource.url");
+    private static final String JDBC_DRIVER = ResourceReader.getProperty("datasource.driverClassName");
+    private static final String DB_URL = ResourceReader.getProperty("datasource.url");
 
     // Database credentials
-    private static final String USER = ResourceReader.getProperty("bulkfile.datasource.username");
-    private static final String PASS = ResourceReader.getProperty("bulkfile.datasource.password");
+    private static final String USER = ResourceReader.getProperty("datasource.username");
+    private static final String PASS = ResourceReader.getProperty("datasource.password");
 
     private Connection con;
     private List<Map<String, Object>> queryResult = new ArrayList<>();

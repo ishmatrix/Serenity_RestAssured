@@ -1,8 +1,5 @@
-// Copyright (c) 2018 Vocalink Ltd
-package com.vocalink.bps.acceptancetest.steps;
 
-
-import com.vocalink.bps.acceptancetest.common.ResourceReader;
+import acceptancetest.common.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
